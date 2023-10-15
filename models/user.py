@@ -19,4 +19,4 @@ class User(BaseModel):
         """
             initializes the instance of an object
         """
-        super().__init__(*args, **kwargs) 
+        super().__init__(*args, **kwargs)
