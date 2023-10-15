@@ -29,7 +29,7 @@ To use the HBNB Console, you need to have Python 3 installed on your system. Fol
 1. Clone the HBNB repository:
 
    ```sh
-   git clone https://github.com/ayequill/AirBnB_clone.git
+   git clone https://github.com/Nadira3/AirBnB_clone.git
    cd AirBnB_clone
    ```
 
