@@ -1,7 +1,7 @@
-
 #!/usr/bin/python3
-""" Test Console Module """
-
+"""
+    Test Console Module
+"""
 
 import unittest
 from unittest.mock import patch
