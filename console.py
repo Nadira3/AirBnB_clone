@@ -130,7 +130,7 @@ class HBNBCommand(cmd.Cmd):
                     for obj_id in all_objs.copy().keys():
                         obj = all_objs[obj_id]
                         if obj['id'] == arg_list[1]:
-                            del(all_objs[obj_id])
+                            del (all_objs[obj_id])
                             storage.save()
 
     def do_all(self, line):
