@@ -1,8 +1,12 @@
 # HBNB Console Documentation
 
-<div align="center"><img src="console.png" width="600px"/></div>
+In this repository, the first part is handled: The console, this is the first step towards building my first full web application: the AirBnB clone. In this part, a command line interpreter was created to manipulate data without a visual interface also including a first Store Engine.
+
+<div align="center"><img src="framework.png" width="600px"/></div>
 
 The **HBNB Console** is a command-line interface (CLI) for interacting with the "Holberton School New Base" (HBNB) database. It allows you to manage and manipulate instances of various classes, such as User, Place, State, City, Amenity, Review, and more.
+
+<div align="center"><img src="console.png" width="600px"/></div>
 
 ## Table of Contents
 
