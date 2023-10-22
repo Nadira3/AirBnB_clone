@@ -1,2 +1,2 @@
-# Web_Static Desccription
+# Web static description
 
