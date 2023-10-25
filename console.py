@@ -195,7 +195,6 @@ class HBNBCommand(cmd.Cmd):
                 r'[a-zA-Z]+\.{1}[a-zA-Z]+\({1}.*\){1}', line)\
                 or re.match(
                         r'[a-zA-Z]+\.{1}[a-zA-Z]+\("[-\w]+", .*\)', line):
-
             if "{" in line and "}" in line:
                 flag = 1
             arg_list = [item for item in re.split(r'[("\', :{}.)]', line) if item]
