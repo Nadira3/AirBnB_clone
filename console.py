@@ -191,30 +191,29 @@ class HBNBCommand(cmd.Cmd):
                     unknown commands
         """
         flag = 0
-        if not re.match(
+        if re.match(
                 r'[a-zA-Z]+\.{1}[a-zA-Z]+\({1}.*\){1}', line)\
-                and not re.match(
+                or re.match(
                         r'[a-zA-Z]+\.{1}[a-zA-Z]+\("[-\w]+", .*\)', line):
-            return cmd.Cmd.default(self, line)
 
-        if "{" in line and "}" in line:
-            flag = 1
-        arg_list = [item for item in re.split(r'[("\', :{}.)]', line) if item]
-        if f"do_{arg_list[1]}" in HBNBCommand.__dict__:
-            if len(arg_list) == 2:
-                return cmd.Cmd.onecmd(self, f"{arg_list[1]} {arg_list[0]}")
-            else:
-                string = arg_list[1] + f" {arg_list[0]} {arg_list[2]} "
-                count = 0
-                for i in range(len(arg_list)):
-                    if i > 2:
-                        string += f" {arg_list[i]} "
-                        count += 1
-                    if count == 2 or (not flag and i == len(arg_list) - 1):
-                        count = 0
-                        cmd.Cmd.onecmd(self, string)
-                        string = arg_list[1] +\
-                            f" {arg_list[0]} {arg_list[2]} "
+            if "{" in line and "}" in line:
+                flag = 1
+            arg_list = [item for item in re.split(r'[("\', :{}.)]', line) if item]
+            if f"do_{arg_list[1]}" in HBNBCommand.__dict__:
+                if len(arg_list) == 2:
+                    return cmd.Cmd.onecmd(self, f"{arg_list[1]} {arg_list[0]}")
+                else:
+                    string = arg_list[1] + f" {arg_list[0]} {arg_list[2]} "
+                    count = 0
+                    for i in range(len(arg_list)):
+                        if i > 2:
+                            string += f" {arg_list[i]} "
+                            count += 1
+                        if count == 2 or (not flag and i == len(arg_list) - 1):
+                            count = 0
+                            cmd.Cmd.onecmd(self, string)
+                            string = arg_list[1] +\
+                                f" {arg_list[0]} {arg_list[2]} "
         else:
             return cmd.Cmd.default(self, line)
 
