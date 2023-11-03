@@ -50,34 +50,6 @@ class HBNBCommand(cmd.Cmd):
             action: prints a new line
         """
         pass
-    
-    def do_checkLine(self, line):
-        if not line:
-            print("** class name missing **")
-            return False
-        else:
-            arg_list = cmd.Cmd.parseline(self, line)
-            if arg_list[0] not in classFind():
-                print("** class doesn't exist **")
-                return False
-            elif len(arg_list[2].split()) < 2:
-                print("** instance id missing **")
-                return False
-            else:
-                flag = 0 if len(arg_list[1]) < 2 else 1
-                instance_key = arg_list[0] + "." + arg_list[1] if not flag else \
-                        arg_list[0] + "." + arg_list[1].split()[0]
-                all_objs = storage.all()
-                if instance_key not in all_objs:
-                    print("** no instance found **")
-                    return False
-                if flag and len(arg_list[2].split()) == 2:
-                    print("** attribute name missing **")
-                    return False
-                if flag and len(arg_list[2].split()) == 3:
-                    print("** value missing **")
-                    return False
-        return True
 
     def do_create(self, class_name):
         """
@@ -107,16 +79,31 @@ class HBNBCommand(cmd.Cmd):
                    <class_name>.show("<instance.id>")
             action: prints instance.__dict__
         """
-        if cmd.Cmd.onecmd(self, f"checkLine {line}"):
+        if not line:
+            print("** class name missing **")
+        else:
             arg_list = cmd.Cmd.parseline(self, line)
-            all_objs = storage.all()
-            for obj_id in all_objs.keys():
-                obj = all_objs[obj_id]
-                if obj['id'] == arg_list[1]:
-                    my_class = globals()[arg_list[0]]
-                    instance = my_class(**obj)
-                    instance.to_dict()
-                    print(instance)
+            if arg_list[0] not in classFind():
+                print("** class doesn't exist **")
+            elif len(arg_list[2].split()) < 2:
+                print("** instance id missing **")
+            else:
+                instance_key = arg_list[0] + "." + arg_list[1]
+                all_objs = storage.all()
+                if instance_key not in all_objs:
+                    print("** no instance found **")
+                else:
+                    for obj_id in all_objs.keys():
+                        obj = all_objs[obj_id]
+                        if obj['id'] == arg_list[1]:
+                            # Get the class from the global namespace
+                            my_class = globals()[arg_list[0]]
+
+                            # Instantiate an object from the class
+                            instance = my_class(**obj)
+
+                            instance.to_dict()
+                            print(instance)
 
     def do_destroy(self, line):
         """
@@ -126,14 +113,25 @@ class HBNBCommand(cmd.Cmd):
             action: prints instance.__dict__
                     saves changes to file
         """
-        if cmd.Cmd.onecmd(self, f"checkLine {line}"):
+        if not line:
+            print("** class name missing **")
+        else:
             arg_list = cmd.Cmd.parseline(self, line)
-            all_objs = storage.all()
-            for obj_id in all_objs.copy().keys():
-                obj = all_objs[obj_id]
-                if obj['id'] == arg_list[1]:
-                    del(all_objs[obj_id])
-                    storage.save()
+            if arg_list[0] not in classFind():
+                print("** class doesn't exist **")
+            elif len(arg_list[2].split()) < 2:
+                print("** instance id missing **")
+            else:
+                instance_key = arg_list[0] + "." + arg_list[1]
+                all_objs = storage.all()
+                if instance_key not in all_objs:
+                    print("** no instance found **")
+                else:
+                    for obj_id in all_objs.copy().keys():
+                        obj = all_objs[obj_id]
+                        if obj['id'] == arg_list[1]:
+                            del (all_objs[obj_id])
+                            storage.save()
 
     def do_all(self, line):
         """
@@ -166,21 +164,37 @@ class HBNBCommand(cmd.Cmd):
             if key is not in dict
                     saves changes to file
         """
-        if cmd.Cmd.onecmd(self, f"checkLine {line}"):
+        if not line:
+            print("** class name missing **")
+        else:
             arg_list = cmd.Cmd.parseline(self, line)
-            all_objs = storage.all()
-            for obj_id in all_objs.copy().keys():
-                obj = all_objs[obj_id]
-                if obj['id'] == arg_list[1].split()[0]:
-                    if arg_list[1].split()[1] not in obj:
-                        obj[arg_list[1].split()[1]] = \
-                        arg_list[1].split()[2].replace('"', '')
-                    else:
-                        for key, value in obj.items():
-                            if key == arg_list[1].split()[1]:
-                                obj[key] = arg_list[1].\
-                                    split()[2].replace('"', '')
-                    storage.save()
+            if arg_list[0] not in classFind():
+                print("** class doesn't exist **")
+            elif len(arg_list[2].split()) == 1:
+                print("** instance id missing **")
+            else:
+                instance_key = arg_list[0] + "." + arg_list[1].split()[0]
+                all_objs = storage.all()
+                if instance_key not in all_objs:
+                    print("** no instance found **")
+                elif len(arg_list[2].split()) == 2:
+                    print("** attribute name missing **")
+                elif len(arg_list[2].split()) == 3:
+                    print("** value missing **")
+                else:
+                    for obj_id in all_objs.copy().keys():
+                        obj = all_objs[obj_id]
+                        if obj['id'] == arg_list[1].split()[0]:
+                            if arg_list[1].split()[1] not in obj:
+                                obj[arg_list[1].split()[1]] = \
+                                        arg_list[1].split()[2].replace('"', '')
+                            else:
+                                for key, value in obj.items():
+                                    if key == arg_list[1].split()[1]:
+                                        obj[key] = \
+                                           arg_list[1].\
+                                           split()[2].replace('"', '')
+                            storage.save()
 
     def default(self, line):
         """
@@ -191,28 +205,49 @@ class HBNBCommand(cmd.Cmd):
                     unknown commands
         """
         flag = 0
-        if re.match(
+        if not re.match(
                 r'[a-zA-Z]+\.{1}[a-zA-Z]+\({1}.*\){1}', line)\
-                or re.match(
+                and not re.match(
                         r'[a-zA-Z]+\.{1}[a-zA-Z]+\("[-\w]+", .*\)', line):
-            if "{" in line and "}" in line:
-                flag = 1
-            arg_list = [item for item in re.split(r'[("\', :{}.)]', line) if item]
-            if f"do_{arg_list[1]}" in HBNBCommand.__dict__:
-                if len(arg_list) == 2:
-                    return cmd.Cmd.onecmd(self, f"{arg_list[1]} {arg_list[0]}")
+            return cmd.Cmd.default(self, line)
+
+        if "{" in line and "}" in line:
+            flag = 1
+        arg_list = [item for item in re.split(r'[("\', :{}.)]', line) if item]
+        len_arg_list = len(arg_list)
+        if len_arg_list > 1 and arg_list[0] in classFind() and "(" in line:
+            for command in HBNBCommand.__dict__.keys():
+                half_line = arg_list[0] + "." + command.replace("do_", "")
+                if len_arg_list <= 2:
+                    full_line = half_line + f"()"
                 else:
-                    string = arg_list[1] + f" {arg_list[0]} {arg_list[2]} "
-                    count = 0
-                    for i in range(len(arg_list)):
-                        if i > 2:
-                            string += f" {arg_list[i]} "
-                            count += 1
-                        if count == 2 or (not flag and i == len(arg_list) - 1):
-                            count = 0
-                            cmd.Cmd.onecmd(self, string)
-                            string = arg_list[1] +\
-                                f" {arg_list[0]} {arg_list[2]} "
+                    full_line = half_line + "("
+                    for i in range(len_arg_list):
+                        if i >= 2:
+                            full_line += f"{arg_list[i]}"
+                        if i < len_arg_list - 1:
+                            full_line += f","
+                cmd_list = [item for item in re.split(
+                    r'[("\',.)]', full_line) if item]
+                if arg_list == cmd_list:
+                    if len_arg_list == 2:
+                        return cmd.Cmd.onecmd(
+                                self, f"{arg_list[1]} {arg_list[0]}")
+                    else:
+                        string = cmd_list[1] + f" {arg_list[0]} {arg_list[2]} "
+                        list_len = len(cmd_list) - 3
+                        count = 0
+                        for i in range(len(cmd_list)):
+                            if i > 2:
+                                string += f" {arg_list[i]} "
+                                list_len -= 1
+                                count += 1
+                            if count == 2 or (
+                                    not flag and i == len(cmd_list) - 1):
+                                count = 0
+                                cmd.Cmd.onecmd(self, string)
+                                string = cmd_list[1] +\
+                                    f" {arg_list[0]} {arg_list[2]} "
         else:
             return cmd.Cmd.default(self, line)
 
